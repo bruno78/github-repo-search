@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import utilities.NetworkUtils;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText mSearchBoxEditText;
@@ -26,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
         mSearchResultsTextView = (TextView) findViewById(R.id.tv_github_search_results_json);
     }
 
+    public void makeGithubSearchQuery() {
+        String query = mSearchBoxEditText.getText().toString();
+        String url = NetworkUtils.buildUrl(query).toString();
+
+        mUrlDisplayTextView.setText(url);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -37,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(item.getItemId() == R.id.action_search) {
-            Toast.makeText(this, "Search clicked!", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Search clicked!", Toast.LENGTH_SHORT).show();
+            makeGithubSearchQuery();
             return true;
         }
 
