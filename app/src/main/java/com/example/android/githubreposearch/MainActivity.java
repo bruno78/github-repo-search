@@ -1,5 +1,6 @@
 package com.example.android.githubreposearch;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,9 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.URL;
 
 import utilities.NetworkUtils;
 
@@ -30,13 +34,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void makeGithubSearchQuery() {
         String query = mSearchBoxEditText.getText().toString();
-        String url = NetworkUtils.buildUrl(query).toString();
+        URL githubSearchUrl = NetworkUtils.buildUrl(query);
 
-        mUrlDisplayTextView.setText(url);
+        mUrlDisplayTextView.setText(githubSearchUrl.toString());
 
-        try {
-            String response = NetworkUtils.getResponseFromHttpUrl(url);
-            mSearchResultsTextView.setText(response);
+        new GithubQueryTask().execute(githubSearchUrl);
+    }
+
+    public class GithubQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+
+            URL url = urls[0];
+            String githubSearchResponse = null;
+            try {
+                githubSearchResponse = NetworkUtils.getResponseFromHttpUrl(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return githubSearchResponse;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            if (result != null && !result.equals("")) mSearchResultsTextView.setText(result);
         }
     }
 
