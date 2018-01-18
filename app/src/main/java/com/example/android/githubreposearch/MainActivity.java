@@ -33,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
         String url = NetworkUtils.buildUrl(query).toString();
 
         mUrlDisplayTextView.setText(url);
+
+        try {
+            String response = NetworkUtils.getResponseFromHttpUrl(url);
+            mSearchResultsTextView.setText(response);
+        }
     }
 
     @Override
